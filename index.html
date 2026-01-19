@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Easily convert videos to GIF. Customize size, frame rate, and quality. Discord size guide included.">
+    <title>GIF Converter - Convert Videos to GIF</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-effects">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">🎬</span>
+            <span class="logo-text">GIF Converter</span>
+        </div>
+        <nav class="nav">
+            <a href="#converter" class="nav-link" data-i18n="navConvert">Convert</a>
+            <a href="#settings" class="nav-link" data-i18n="navSettings">Settings</a>
+            <a href="#discord-info" class="nav-link" data-i18n="navDiscord">Discord Guide</a>
+            <div class="language-selector">
+                <select id="languageSelect" class="lang-select">
+                    <option value="en">🌐 English</option>
+                    <option value="ja">🌐 日本語</option>
+                    <option value="es">🌐 Español</option>
+                    <option value="zh">🌐 中文</option>
+                    <option value="ko">🌐 한국어</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Top Ad Banner -->
+    <div class="ad-container ad-banner" id="adBannerTop">
+        <!-- Google AdSense Ad Unit (uncomment after approval)
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="XXXXXXXXXX"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        -->
+        <div class="ad-placeholder">
+            <span>Advertisement</span>
+        </div>
+    </div>
+
+    <main class="main">
+        <section class="hero">
+            <h1 class="hero-title">
+                <span data-i18n="heroTitle">Convert Videos to</span> <span class="gradient-text"
+                    data-i18n="heroTitleGIF">GIF</span>
+            </h1>
+            <p class="hero-subtitle" data-i18n="heroSubtitle">
+                Create high-quality GIFs in your browser. Customize size, frame rate, and quality freely.
+            </p>
+        </section>
+
+        <section id="converter" class="converter-section">
+            <!-- Upload Area -->
+            <div class="upload-container glass-card" id="uploadArea">
+                <div class="upload-content">
+                    <div class="upload-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                    </div>
+                    <h2 class="upload-title" data-i18n="uploadTitle">Drop Video Here</h2>
+                    <p class="upload-subtitle" data-i18n="uploadSubtitle">or click to select a file</p>
+                    <p class="upload-formats" data-i18n="uploadFormats">MP4, WebM, MOV, AVI supported</p>
+                    <input type="file" id="fileInput" accept="video/*" hidden>
+                </div>
+                <div class="upload-progress" id="uploadProgress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText" data-i18n="processing">Processing...</p>
+                </div>
+            </div>
+
+            <!-- Video Preview -->
+            <div class="preview-container glass-card hidden" id="previewContainer">
+                <div class="preview-header">
+                    <h3 data-i18n="preview">Preview</h3>
+                    <button class="btn btn-ghost" id="removeVideo">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="video-preview">
+                    <video id="videoPreview" controls></video>
+                    <canvas id="eyedropperCanvas" class="hidden"></canvas>
+                </div>
+                <div class="video-info" id="videoInfo">
+                    <span class="info-badge" id="videoDuration">0:00</span>
+                    <span class="info-badge" id="videoResolution">0x0</span>
+                    <span class="info-badge" id="videoSize">0 MB</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="settings-section hidden" data-settings-section>
+            <div class="settings-container glass-card">
+                <h3 class="settings-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3" />
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                    </svg>
+                    <span data-i18n="settingsTitle">GIF Settings</span>
+                </h3>
+
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <label class="setting-label" data-i18n="outputWidth">Output Width</label>
+                        <select id="outputWidth" class="setting-select">
+                            <option value="128">128px (Emoji)</option>
+                            <option value="320">320px (Sticker)</option>
+                            <option value="480" selected>480px</option>
+                            <option value="640">640px</option>
+                            <option value="720">720px</option>
+                            <option value="original" data-i18n-value="originalSize">Original Size</option>
+                        </select>
+                        <p class="setting-hint" data-i18n="widthHint">Smaller sizes result in smaller file sizes</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label" data-i18n="frameRate">Frame Rate</label>
+                        <select id="frameRate" class="setting-select">
+                            <option value="5">5 fps (Ultra Light)</option>
+                            <option value="8">8 fps (Light)</option>
+                            <option value="10">10 fps</option>
+                            <option value="15" selected>15 fps</option>
+                            <option value="20">20 fps</option>
+                            <option value="30">30 fps</option>
+                        </select>
+                        <p class="setting-hint" data-i18n="frameRateHint">Lower = smaller file</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label" data-i18n="colorCount">Color Count</label>
+                        <select id="colorCount" class="setting-select">
+                            <option value="32">32 colors (Min)</option>
+                            <option value="64">64 colors (Light)</option>
+                            <option value="128" selected>128 colors</option>
+                            <option value="256">256 colors (Max)</option>
+                        </select>
+                        <p class="setting-hint" data-i18n="colorHint">Fewer colors = smaller file</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="setting-label" data-i18n="maxDuration">Max Duration</label>
+                        <select id="maxDuration" class="setting-select">
+                            <option value="2">2s</option>
+                            <option value="3">3s</option>
+                            <option value="5" selected>5s</option>
+                            <option value="10">10s</option>
+                            <option value="15">15s</option>
+                        </select>
+                        <p class="setting-hint" data-i18n="durationHint">Shorter = smaller file</p>
+                    </div>
+                </div>
+
+                <!-- Square Crop Option -->
+                <div class="crop-section">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="squareCrop" class="toggle-input">
+                        <span class="toggle-switch"></span>
+                        <span data-i18n="squareCrop">Square Crop (1:1)</span>
+                    </label>
+                    <p class="setting-hint" data-i18n="squareCropHint">Required for Discord stickers & Twitch emotes</p>
+                </div>
+
+                <!-- Estimated Size Display -->
+                <div class="estimate-section" id="estimateSection">
+                    <div class="estimate-container">
+                        <div class="estimate-icon">📊</div>
+                        <div class="estimate-info">
+                            <span class="estimate-label" data-i18n="estimatedSize">Estimated Size</span>
+                            <span class="estimate-value" id="estimatedSize">-- MB</span>
+                        </div>
+                        <div class="estimate-details">
+                            <span class="estimate-detail" id="estimateFrames">-- frames</span>
+                            <span class="estimate-detail" id="estimateResolution">--</span>
+                        </div>
+                    </div>
+                    <p class="estimate-hint" data-i18n="estimateHint">Actual size may vary based on video content</p>
+                </div>
+
+                <!-- Chroma Key Section -->
+                <div class="chroma-key-section">
+                    <h4 class="chroma-key-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 2a10 10 0 0 1 0 20" />
+                        </svg>
+                        <span data-i18n="chromaKey">Chroma Key</span>
+                    </h4>
+
+                    <div class="chroma-key-controls">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="chromaKeyEnabled" class="toggle-input">
+                            <span class="toggle-switch"></span>
+                            <span data-i18n="chromaKeyEnable">Enable Transparency</span>
+                        </label>
+
+                        <div class="chroma-key-settings hidden" id="chromaKeySettings">
+                            <div class="color-picker-group">
+                                <label class="setting-label" data-i18n="chromaKeyColor">Transparent Color</label>
+                                <div class="color-picker-row">
+                                    <input type="color" id="chromaKeyColor" class="color-input" value="#00ff00">
+                                    <div class="color-preview" id="colorPreview" style="background-color: #00ff00;">
+                                    </div>
+                                    <button class="btn btn-secondary btn-eyedropper" id="eyedropperBtn" type="button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M2 22l1-1h3l9-9" />
+                                            <path d="M3 21v-3l9-9" />
+                                            <path d="M14.5 5.5l4.5 4.5" />
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                        </svg>
+                                        <span data-i18n="chromaKeyEyedropper">Pick from Video</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="tolerance-group">
+                                <label class="setting-label">
+                                    <span data-i18n="chromaKeyTolerance">Tolerance</span>: <span
+                                        id="toleranceValue">30</span>
+                                </label>
+                                <input type="range" id="chromaKeyTolerance" class="tolerance-slider" min="0" max="100"
+                                    value="30">
+                            </div>
+
+                            <p class="setting-hint" data-i18n="chromaKeyHint">Remove background color from GIF</p>
+
+                            <!-- Chroma Key Preview -->
+                            <div class="chroma-preview-section">
+                                <div class="chroma-preview-container hidden" id="chromaPreviewContainer">
+                                    <div class="chroma-preview-header">
+                                        <span data-i18n="chromaKeyPreviewTitle">Transparency Preview</span>
+                                        <div class="preview-controls">
+                                            <button class="btn btn-ghost btn-control" id="playPausePreviewBtn"
+                                                type="button" title="Play/Pause">
+                                                <svg id="playIcon" width="16" height="16" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polygon points="5 3 19 12 5 21 5 3" />
+                                                </svg>
+                                                <svg id="pauseIcon" width="16" height="16" viewBox="0 0 24 24"
+                                                    fill="none" stroke="currentColor" stroke-width="2" class="hidden">
+                                                    <rect x="6" y="4" width="4" height="16" />
+                                                    <rect x="14" y="4" width="4" height="16" />
+                                                </svg>
+                                            </button>
+                                            <button class="btn btn-ghost btn-control" id="pickFromPreviewBtn"
+                                                type="button" data-i18n-title="chromaKeyPickFromPreview">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <path d="M2 22l1-1h3l9-9" />
+                                                    <path d="M3 21v-3l9-9" />
+                                                    <path d="M14.5 5.5l4.5 4.5" />
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="chroma-preview-canvas-wrapper" id="previewCanvasWrapper">
+                                        <canvas id="chromaPreviewCanvas"></canvas>
+                                    </div>
+                                    <p class="chroma-preview-hint" data-i18n="chromaKeyPreviewHint">Checkered pattern
+                                        shows transparent areas. Click to pick color.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-convert" id="convertBtn" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                    <span data-i18n="convertToGif">Convert to GIF</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- In-content Ad -->
+        <div class="ad-container ad-inline" id="adInline">
+            <!-- Google AdSense Ad Unit (uncomment after approval)
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            -->
+            <div class="ad-placeholder">
+                <span>Advertisement</span>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <section class="result-section hidden" id="resultSection">
+            <div class="result-container glass-card">
+                <h3 class="result-title" data-i18n="conversionComplete">🎉 Conversion Complete!</h3>
+                <div class="gif-preview">
+                    <img id="gifPreview" alt="Generated GIF">
+                </div>
+                <div class="gif-info" id="gifInfo">
+                    <span class="info-badge" id="gifSize">0 KB</span>
+                    <span class="info-badge" id="gifDimensions">0x0</span>
+                </div>
+                <div class="result-actions">
+                    <button class="btn btn-primary" id="downloadBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        <span data-i18n="download">Download</span>
+                    </button>
+                    <button class="btn btn-x-share" id="shareXBtn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                        <span data-i18n="shareOnX">Share on X</span>
+                    </button>
+                    <button class="btn btn-secondary" id="newConvertBtn">
+                        <span data-i18n="convertNewVideo">Convert New Video</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Platform Guidelines Section -->
+        <section id="discord-info" class="guidelines-section">
+            <div class="guidelines-container glass-card">
+                <!-- Tab Buttons -->
+                <div class="platform-tabs">
+                    <button class="platform-tab active" id="discordTab" data-platform="discord">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                        </svg>
+                        Discord
+                    </button>
+                    <button class="platform-tab" id="twitchTab" data-platform="twitch">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z" />
+                        </svg>
+                        Twitch
+                    </button>
+                </div>
+
+                <!-- Discord Content -->
+                <div class="platform-content" id="discordContent">
+                    <h3 class="platform-title">
+                        <span data-i18n="discordTitle">Discord Emoji & Sticker</span>
+                    </h3>
+                    <div class="guidelines-grid guidelines-grid-2col">
+                        <div class="guidelines-card guidelines-card-simple">
+                            <div class="guidelines-card-header">
+                                <span class="guidelines-card-icon">😀</span>
+                                <h4 data-i18n="discordEmoji">Emoji</h4>
+                            </div>
+                            <div class="guidelines-specs">
+                                <span class="spec-item">256KB</span>
+                                <span class="spec-divider">|</span>
+                                <span class="spec-item">128×128px</span>
+                            </div>
+                            <p class="guidelines-hint" data-i18n="discordEmojiHint">💡 Auto-resized. Just keep under
+                                256KB!</p>
+                        </div>
+                        <div class="guidelines-card guidelines-card-simple">
+                            <div class="guidelines-card-header">
+                                <span class="guidelines-card-icon">🎨</span>
+                                <h4 data-i18n="discordSticker">Sticker</h4>
+                            </div>
+                            <div class="guidelines-specs">
+                                <span class="spec-item">512KB</span>
+                                <span class="spec-divider">|</span>
+                                <span class="spec-item">320×320px</span>
+                            </div>
+                            <p class="guidelines-hint" data-i18n="discordStickerHint">💡 320×320px, transparent BG
+                                required</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Twitch Content -->
+                <div class="platform-content hidden" id="twitchContent">
+                    <h3 class="platform-title">
+                        <span data-i18n="twitchTitle">Twitch Emote</span>
+                    </h3>
+                    <div class="guidelines-grid guidelines-grid-2col">
+                        <div class="guidelines-card guidelines-card-simple">
+                            <div class="guidelines-card-header">
+                                <span class="guidelines-card-icon">🔄</span>
+                                <h4 data-i18n="twitchAutoMode">Auto-resize</h4>
+                            </div>
+                            <div class="guidelines-specs">
+                                <span class="spec-item">1MB</span>
+                                <span class="spec-divider">|</span>
+                                <span class="spec-item">112-4096px</span>
+                            </div>
+                            <p class="guidelines-hint" data-i18n="twitchAutoHint">💡 Upload 1 image, auto-resized to
+                                28/56/112px</p>
+                        </div>
+                        <div class="guidelines-card guidelines-card-simple">
+                            <div class="guidelines-card-header">
+                                <span class="guidelines-card-icon">✋</span>
+                                <h4 data-i18n="twitchManualMode">Manual</h4>
+                            </div>
+                            <div class="guidelines-specs">
+                                <span class="spec-item">512KB each</span>
+                                <span class="spec-divider">|</span>
+                                <span class="spec-item">28/56/112px</span>
+                            </div>
+                            <p class="guidelines-hint" data-i18n="twitchManualHint">💡 Must be square, transparent BG,
+                                max 60 frames</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p data-i18n="footerText">© 2026 GIF Converter - Free browser-based GIF conversion tool</p>
+    </footer>
+
+    <!-- Google AdSense Script (uncomment after approval)
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+         crossorigin="anonymous"></script>
+    -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+    <script src="translations.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
